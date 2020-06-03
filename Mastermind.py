@@ -3,6 +3,10 @@
 import random
 import sys
 import os
+import random
+from PySide2.QtWidgets import (QApplication, QLabel, QPushButton,
+                               QVBoxLayout, QWidget, QLineEdit)
+from PySide2.QtCore import Slot, Qt
 
 class Reguły_Gry():
     def __init__(self):
@@ -65,75 +69,53 @@ class Logika(Reguły_Gry):
         if self.poprawne == 4:
             print("Wygrana!!!")
             sys.exit()
+
+class Interface(QWidget):
+    def __init__(self, x1,x2,x3,x4):
+        QWidget.__init__(self)
+
+        self.button1 = QPushButton("Sprawdz!")
+        self.button2 = QPushButton("Oszust!")
+        self.button3 = QPushButton("Reset!")
+        self.text = QLabel("{}{}{}{}".format(x1,x2,x3,x4))
+        self.text.setAlignment(Qt.AlignCenter)
+        self.x1 = QLineEdit(self)
+        self.x2 = QLineEdit(self)
+        self.x3 = QLineEdit(self)
+        self.x4 = QLineEdit(self)
+
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.text)
+        self.layout.addWidget(self.button1)
+        self.layout.addWidget(self.button2)
+        self.layout.addWidget(self.button3)
+        self.setLayout(self.layout)
+
+        # Connecting the signal
+        self.button1.clicked.connect(self.Sprawdz)
+        self.button2.clicked.connect(self.Oszust)
+        self.button3.clicked.connect(self.Reset)
+
+    @Slot()
+    def Sprawdz(self):
+        self.text.setText("Sprawdz!")
+
+    def Oszust(self):
+        self.text.setText("Oszust!")
+
+    def Reset(self):
+        self.text.setText("Reset!")
+
+
          
-a = Logika()
-a.PR()
+if __name__ == "__main__":
 
+    n = Reguły_Gry()
 
+    app = QApplication(sys.argv)
 
+    widget = Interface(n.x1,n.x2,n.x3,n.x4)
+    widget.resize(800, 600)
+    widget.show()
 
-
-################################################################################
-## Form generated from reading UI file 'designerENWcRn.ui'
-##
-## Created by: Qt User Interface Compiler version 5.14.2
-##
-## WARNING! All changes made in this file will be lost when recompiling UI file!
-################################################################################
-
-from PySide2.QtCore import (QCoreApplication, QDate, QDateTime, QMetaObject,
-    QObject, QPoint, QRect, QSize, QTime, QUrl, Qt)
-from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
-    QFontDatabase, QIcon, QKeySequence, QLinearGradient, QPalette, QPainter,
-    QPixmap, QRadialGradient)
-from PySide2.QtWidgets import *
-
-
-class Ui_Mastermind(object):
-    def setupUi(self, Mastermind):
-        if not Mastermind.objectName():
-            Mastermind.setObjectName(u"Mastermind")
-        Mastermind.resize(361, 483)
-        self.Sprawdz = QPushButton(Mastermind)
-        self.Sprawdz.setObjectName(u"Sprawdz")
-        self.Sprawdz.setGeometry(QRect(240, 340, 88, 34))
-        self.oszust = QPushButton(Mastermind)
-        self.oszust.setObjectName(u"oszust")
-        self.oszust.setGeometry(QRect(240, 250, 88, 34))
-        self.reset = QPushButton(Mastermind)
-        self.reset.setObjectName(u"reset")
-        self.reset.setGeometry(QRect(240, 300, 88, 34))
-        self.x1 = QTextEdit(Mastermind)
-        self.x1.setObjectName(u"x1")
-        self.x1.setGeometry(QRect(30, 330, 31, 41))
-        self.x2 = QTextEdit(Mastermind)
-        self.x2.setObjectName(u"x2")
-        self.x2.setGeometry(QRect(80, 330, 31, 41))
-        self.x4 = QTextEdit(Mastermind)
-        self.x4.setObjectName(u"x4")
-        self.x4.setGeometry(QRect(180, 330, 31, 41))
-        self.x3 = QTextEdit(Mastermind)
-        self.x3.setObjectName(u"x3")
-        self.x3.setGeometry(QRect(130, 330, 31, 41))
-        self.label = QLabel(Mastermind)
-        self.label.setObjectName(u"label")
-        self.label.setGeometry(QRect(37, 387, 201, 71))
-        self.label.setLayoutDirection(Qt.LeftToRight)
-        self.label.setAlignment(Qt.AlignCenter)
-
-        self.retranslateUi(Mastermind)
-
-        QMetaObject.connectSlotsByName(Mastermind)
-    # setupUi
-
-    def retranslateUi(self, Mastermind):
-        Mastermind.setWindowTitle(QCoreApplication.translate("Mastermind", u"Dialog", None))
-        self.Sprawdz.setText(QCoreApplication.translate("Mastermind", u"Sprawdz", None))
-        self.oszust.setText(QCoreApplication.translate("Mastermind", u"Oszust!", None))
-        self.reset.setText(QCoreApplication.translate("Mastermind", u"Reset", None))
-        self.label.setText(QCoreApplication.translate("Mastermind", u"Witam!", None))
-    # retranslateUi
-
-
-
-
+    sys.exit(app.exec_())
