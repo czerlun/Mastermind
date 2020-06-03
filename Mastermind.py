@@ -38,15 +38,16 @@ class Logika(Reguły_Gry):
         self.poprawne = 0
         self.wystepujace = 0
 
-    def Turn(self):
-        linia = input()
-        self.xx1,self.xx2,self.xx3,self.xx4 = linia.split() 
+    def Turn(self,a1,a2,a3,a4):
+        self.xx1 =a1
+        self.xx2 =a2
+        self.xx3 =a3
+        self.xx4 =a4
         self.tura += 1
 
     def sprawdzenie(self):
         self.poprawne = 0
         self.wystepujace = 0
-        print("X,X,X,X")
         if int(self.xx1) == self.x1:
             self.poprawne +=1
         elif int(self.xx1) in self.tab:
@@ -63,21 +64,27 @@ class Logika(Reguły_Gry):
             self.poprawne +=1
         elif int(self.xx4) in self.tab:
             self.wystepujace +=1
-        print("Poprawne = ", self.poprawne)
-        print("Występują = ", self.wystepujace)
-        print("Twój typ : ",self.xx1,self.xx2,self.xx3,self.xx4)
-        if self.poprawne == 4:
-            print("Wygrana!!!")
-            sys.exit()
 
 class Interface(QWidget):
-    def __init__(self, x1,x2,x3,x4):
+    def __init__(self, rx1,rx2,rx3,rx4):
         QWidget.__init__(self)
 
         self.button1 = QPushButton("Sprawdz!")
         self.button2 = QPushButton("Oszust!")
         self.button3 = QPushButton("Reset!")
-        self.text = QLabel("{}{}{}{}".format(x1,x2,x3,x4))
+        self.text = QLabel("{}{}{}{}".format(rx1,rx2,rx3,rx4))
+        self.poprawne = 0
+        self.wystepujace = 0
+        self.rx1 = rx1
+        self.rx2 = rx2
+        self.rx3 = rx3
+        self.rx4 = rx4
+        self.tura = 1
+        self.tab = []
+        self.tab.append(rx1)
+        self.tab.append(rx2)
+        self.tab.append(rx3)
+        self.tab.append(rx4)
         self.text.setAlignment(Qt.AlignCenter)
         self.x1 = QLineEdit(self)
         self.x2 = QLineEdit(self)
@@ -86,6 +93,10 @@ class Interface(QWidget):
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.text)
+        self.layout.addWidget(self.x1)
+        self.layout.addWidget(self.x2)
+        self.layout.addWidget(self.x3)
+        self.layout.addWidget(self.x4)
         self.layout.addWidget(self.button1)
         self.layout.addWidget(self.button2)
         self.layout.addWidget(self.button3)
@@ -98,7 +109,48 @@ class Interface(QWidget):
 
     @Slot()
     def Sprawdz(self):
-        self.text.setText("Sprawdz!")
+        self.poprawne=0
+        self.wystepujace=0
+        tmp_tab = self.tab
+        if int(self.rx1) == int(self.x1.text()):
+            self.poprawne +=1
+            tmp_tab.remove(int(self.x1.text()))
+        elif int(self.x1.text()) in tmp_tab:
+            self.wystepujace +=1
+            tmp_tab.remove(int(self.x1.text()))
+        if int(self.rx2) == int(self.x2.text()):
+            self.poprawne +=1
+            if int(self.x2.text()) in tmp_tab:
+                tmp_tab.remove(int(self.x2.text()))
+        elif int(self.x2.text()) in tmp_tab:
+            self.wystepujace +=1
+            tmp_tab.remove(int(self.x2.text()))
+        if int(self.rx3) == int(self.x3.text()):
+            self.poprawne +=1
+            if int(self.x3.text()) in tmp_tab:
+                tmp_tab.remove(int(self.x3.text()))
+        elif int(self.x3.text()) in tmp_tab:
+            self.wystepujace +=1
+            tmp_tab.remove(int(self.x3.text()))
+        if int(self.rx4) == int(self.x4.text()):
+            self.poprawne +=1
+            if int(self.x4.text()) in tmp_tab:
+                tmp_tab.remove(int(self.x4.text()))
+        elif int(self.x4.text()) in tmp_tab:
+            self.wystepujace +=1
+        
+        wynik = "Tura "+str(self.tura)+" : "+ str(self.x1.text()+self.x2.text()+self.x3.text()+self.x4.text()) + " Poprawne ="+str(self.poprawne)+" Wystepujace = "+str(self.wystepujace)
+        self.text.setText(self.text.text() + '\n' +wynik)
+
+        if self.x1.text() == str(self.rx1) and self.x2.text() == str(self.rx2) and self.x3.text() == str(self.rx3) and self.x4.text() == str(self.rx4):
+            self.text.setText("Wygrana!!!")
+
+        self.x1.clear()
+        self.x2.clear()
+        self.x3.clear()
+        self.x4.clear()
+        self.tura +=1
+
 
     def Oszust(self):
         self.text.setText("Oszust!")
@@ -110,10 +162,9 @@ class Interface(QWidget):
          
 if __name__ == "__main__":
 
-    n = Reguły_Gry()
+    n = Logika()
 
     app = QApplication(sys.argv)
-
     widget = Interface(n.x1,n.x2,n.x3,n.x4)
     widget.resize(800, 600)
     widget.show()
