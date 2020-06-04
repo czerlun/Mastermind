@@ -28,64 +28,28 @@ class Niepoprawne_odpowiedzi():
     pass
 
 
-class Logika(Reguły_Gry):
-    def __init__(self):
-        super().__init__()
-        self.xx1 = 0
-        self.xx2 = 0
-        self.xx3 = 0
-        self.xx4 = 0
-        self.poprawne = 0
-        self.wystepujace = 0
-
-    def Turn(self,a1,a2,a3,a4):
-        self.xx1 =a1
-        self.xx2 =a2
-        self.xx3 =a3
-        self.xx4 =a4
-        self.tura += 1
-
-    def sprawdzenie(self):
-        self.poprawne = 0
-        self.wystepujace = 0
-        if int(self.xx1) == self.x1:
-            self.poprawne +=1
-        elif int(self.xx1) in self.tab:
-            self.wystepujace +=1
-        if int(self.xx2) == self.x2:
-            self.poprawne +=1
-        elif int(self.xx2) in self.tab:
-            self.wystepujace +=1
-        if int(self.xx3) == self.x3:
-            self.poprawne +=1
-        elif int(self.xx3) in self.tab:
-            self.wystepujace +=1
-        if int(self.xx4) == self.x4:
-            self.poprawne +=1
-        elif int(self.xx4) in self.tab:
-            self.wystepujace +=1
-
 class Interface(QWidget):
-    def __init__(self, rx1,rx2,rx3,rx4):
+    def __init__(self):
         QWidget.__init__(self)
 
+        self.tura = 1
+        self.poprawne = 0
+        self.wystepujace = 0
         self.button1 = QPushButton("Sprawdz!")
         self.button2 = QPushButton("Oszust!")
         self.button3 = QPushButton("Reset!")
-        self.text = QLabel("{}{}{}{}".format(rx1,rx2,rx3,rx4))
-        self.poprawne = 0
-        self.wystepujace = 0
-        self.rx1 = rx1
-        self.rx2 = rx2
-        self.rx3 = rx3
-        self.rx4 = rx4
-        self.tura = 1
-        self.tab = []
-        self.tab.append(rx1)
-        self.tab.append(rx2)
-        self.tab.append(rx3)
-        self.tab.append(rx4)
+        self.text = QLabel("Witam!")
         self.text.setAlignment(Qt.AlignCenter)
+        self.rx1 = random.randint(1,6)
+        self.rx2 = random.randint(1,6)
+        self.rx3 = random.randint(1,6)
+        self.rx4 = random.randint(1,6)
+        self.tab = []
+        self.tab2 = []
+        self.tab.append(self.rx1)
+        self.tab.append(self.rx2)
+        self.tab.append(self.rx3)
+        self.tab.append(self.rx4)
         self.x1 = QLineEdit(self)
         self.x2 = QLineEdit(self)
         self.x3 = QLineEdit(self)
@@ -109,12 +73,17 @@ class Interface(QWidget):
 
     @Slot()
     def Sprawdz(self):
+        self.tab2.append(self.x1.text())
+        self.tab2.append(self.x2.text())
+        self.tab2.append(self.x3.text())
+        self.tab2.append(self.x4.text())
         self.poprawne=0
         self.wystepujace=0
         tmp_tab = self.tab
         if int(self.rx1) == int(self.x1.text()):
             self.poprawne +=1
             tmp_tab.remove(int(self.x1.text()))
+            tab2.remove(int(self.x1.text()))
         elif int(self.x1.text()) in tmp_tab:
             self.wystepujace +=1
             tmp_tab.remove(int(self.x1.text()))
@@ -122,6 +91,8 @@ class Interface(QWidget):
             self.poprawne +=1
             if int(self.x2.text()) in tmp_tab:
                 tmp_tab.remove(int(self.x2.text()))
+            else:
+                self.wystepujace -= 1
         elif int(self.x2.text()) in tmp_tab:
             self.wystepujace +=1
             tmp_tab.remove(int(self.x2.text()))
@@ -129,6 +100,8 @@ class Interface(QWidget):
             self.poprawne +=1
             if int(self.x3.text()) in tmp_tab:
                 tmp_tab.remove(int(self.x3.text()))
+            else:
+                self.wystepujace -= 1
         elif int(self.x3.text()) in tmp_tab:
             self.wystepujace +=1
             tmp_tab.remove(int(self.x3.text()))
@@ -136,6 +109,8 @@ class Interface(QWidget):
             self.poprawne +=1
             if int(self.x4.text()) in tmp_tab:
                 tmp_tab.remove(int(self.x4.text()))
+            else:
+                self.wystepujace -= 1
         elif int(self.x4.text()) in tmp_tab:
             self.wystepujace +=1
         
@@ -150,22 +125,25 @@ class Interface(QWidget):
         self.x3.clear()
         self.x4.clear()
         self.tura +=1
-
+        
 
     def Oszust(self):
         self.text.setText("Oszust!")
 
     def Reset(self):
-        self.text.setText("Reset!")
+        self.text.setText("Nowa Gra")
+        self.tura = 1
+        self.rx1 = random.randint(1,6)
+        self.rx2 = random.randint(1,6)
+        self.rx3 = random.randint(1,6)
+        self.rx4 = random.randint(1,6)
+
 
 
          
 if __name__ == "__main__":
-
-    n = Logika()
-
     app = QApplication(sys.argv)
-    widget = Interface(n.x1,n.x2,n.x3,n.x4)
+    widget = Interface()
     widget.resize(800, 600)
     widget.show()
 
