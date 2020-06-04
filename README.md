@@ -40,3 +40,10 @@ powinien wyświetlić okno z napisem “Tere fere.” oraz wylosowanym kodem.
 Jeśli gracz nacisnął przycisk “Oszust!” przy niepoprawnych regułach gry,
 program powinien wyświetlić okno z napisem “Złapałeś/łaś mnie!”
 
+
+Wymagane Pyside2:
+
+```
+pip install PySide2
+```
+
