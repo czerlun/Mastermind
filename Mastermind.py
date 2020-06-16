@@ -1,46 +1,32 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-import random
+#!/usr/bin/python3
+from random import randint
 import sys
-import os
-import random
 from PySide2.QtWidgets import (QApplication, QLabel, QPushButton,
-                               QVBoxLayout, QWidget, QLineEdit)
+                               QVBoxLayout, QWidget, QLineEdit, QSpinBox)
 from PySide2.QtCore import Slot, Qt
 
 class Interface(QWidget):
     def __init__(self):
         QWidget.__init__(self)
-
-        self.rand = random.randint(0,10)
-        if self.rand > 3:
-            self.oszust = 0
-        else:
-            self.oszust = 1
-        self.tura = 1
-        self.poprawne = 0
-        self.wystepujace = 0
         self.button1 = QPushButton("Sprawdz!")
         self.button2 = QPushButton("Oszust!")
         self.button3 = QPushButton("Reset!")
-        self.text = QLabel("Witam!")
-        self.text.setAlignment(Qt.AlignCenter)
-        self.rx1 = random.randint(1,6)
-        self.rx2 = random.randint(1,6)
-        self.rx3 = random.randint(1,6)
-        self.rx4 = random.randint(1,6)
-        self.tab = []
-        self.tab.append(self.rx1)
-        self.tab.append(self.rx2)
-        self.tab.append(self.rx3)
-        self.tab.append(self.rx4)
-        self.x1 = QLineEdit(self)
-        self.x2 = QLineEdit(self)
-        self.x3 = QLineEdit(self)
-        self.x4 = QLineEdit(self)
-
+        self.text_label = QLabel("Witam!")
+        self.text_label.setAlignment(Qt.AlignCenter)
+        self.x1 = QSpinBox(self)
+        self.x1.setMaximum(6)
+        self.x1.setMinimum(1)
+        self.x2 = QSpinBox(self)
+        self.x2.setMaximum(6)
+        self.x2.setMinimum(1)
+        self.x3 = QSpinBox(self)
+        self.x3.setMaximum(6)
+        self.x3.setMinimum(1)
+        self.x4 = QSpinBox(self)
+        self.x4.setMaximum(6)
+        self.x4.setMinimum(1)
         self.layout = QVBoxLayout()
-        self.layout.addWidget(self.text)
+        self.layout.addWidget(self.text_label)
         self.layout.addWidget(self.x1)
         self.layout.addWidget(self.x2)
         self.layout.addWidget(self.x3)
@@ -50,112 +36,135 @@ class Interface(QWidget):
         self.layout.addWidget(self.button3)
         self.setLayout(self.layout)
 
-        # Connecting the signal
-        if self.oszust == 0:
-            self.button1.clicked.connect(self.Sprawdz)
+class RegulyGry():
+    def __init__(self, My_interface):
+        self.poprawna = 0
+        self.wystepujace = 0
+        self.oszust_flag = 0
+        self.tura = 1
+        self.tab_results = []
+        for _ in range(4):
+            self.tab_results.append(randint(1, 6)) 
+        if self.tab_results[0] >= 2:
+            self.oszust_flag = 0
         else:
-            self.button1.clicked.connect(self.Sprawdz2)
-        self.button2.clicked.connect(self.Oszust)
-        self.button3.clicked.connect(self.Reset)
-
-    @Slot()
-    def Sprawdz2(self):
-        try:
-            a = int(self.x1.text())
-            b = int(self.x1.text())
-            c = int(self.x1.text())
-            d = int(self.x1.text())
-        except:
-            self.text.setText(self.text.text()+"\nPodaj Dobre Liczby")
-        self.poprawne = random.randint(0,4)
-        self.wystepujace = random.randint(0,4)
-        wynik = "Tura "+str(self.tura)+" : "+ str(self.x1.text()+self.x2.text()+self.x3.text()+self.x4.text()) + " Poprawne ="+str(self.poprawne)+" Wystepujace = "+str(self.wystepujace)
-        self.text.setText(self.text.text() + '\n' +wynik)
-
-        if self.x1.text() == str(self.rx1) and self.x2.text() == str(self.rx2) and self.x3.text() == str(self.rx3) and self.x4.text() == str(self.rx4):
-            self.text.setText("Wygrana!!!")
-
-        self.x1.clear()
-        self.x2.clear()
-        self.x3.clear()
-        self.x4.clear()
-        self.tura +=1
-
-    def Sprawdz(self):
-        if self.tura == 12:
-            self.text.setText(self.text.text()+ "Porażka , poprawna kombinacja to: " + str(self.rx1)+ str(self.rx2)+ str(self.rx3)+ str(self.rx4))
-        else:
-            try:
-                self.poprawne=0
-                self.wystepujace=0
-                tmp_tab = self.tab
-                if int(self.rx1) == int(self.x1.text()):
-                    self.poprawne +=1
-                    if int(self.x1.text()) in tmp_tab:
-                        tmp_tab.remove(int(self.x1.text()))
-                elif int(self.x1.text()) in tmp_tab:
-                    self.wystepujace +=1
-                    tmp_tab.remove(int(self.x1.text()))
-                if int(self.rx2) == int(self.x2.text()):
-                    self.poprawne +=1
-                    if int(self.x2.text()) in tmp_tab:
-                        tmp_tab.remove(int(self.x2.text()))
-                elif int(self.x2.text()) in tmp_tab:
-                    self.wystepujace +=1
-                    tmp_tab.remove(int(self.x2.text()))
-                if int(self.rx3) == int(self.x3.text()):
-                    self.poprawne +=1
-                    if int(self.x3.text()) in tmp_tab:
-                        tmp_tab.remove(int(self.x3.text()))
-                elif int(self.x3.text()) in tmp_tab:
-                    self.wystepujace +=1
-                    tmp_tab.remove(int(self.x3.text()))
-                if int(self.rx4) == int(self.x4.text()):
-                    self.poprawne +=1
-                    if int(self.x4.text()) in tmp_tab:
-                        tmp_tab.remove(int(self.x4.text()))
-                elif int(self.x4.text()) in tmp_tab:
-                    self.wystepujace +=1
-                
-                wynik = "Tura "+str(self.tura)+" : "+ str(self.x1.text()+self.x2.text()+self.x3.text()+self.x4.text()) + " Poprawne ="+str(self.poprawne)+" Wystepujace = "+str(self.wystepujace)
-                self.text.setText(self.text.text() + '\n' +wynik)
-
-                if self.x1.text() == str(self.rx1) and self.x2.text() == str(self.rx2) and self.x3.text() == str(self.rx3) and self.x4.text() == str(self.rx4):
-                    self.text.setText("Wygrana!!!")
-
-                self.x1.clear()
-                self.x2.clear()
-                self.x3.clear()
-                self.x4.clear()
-                self.tura +=1
-            except:
-                self.text.setText(self.text.text()+"\nPodaj Dobre Liczby")
-        
-
-    def Oszust(self):
-        if self.oszust == 1:
-            self.text.setText("Złapałeś/łaś mnie!")
-        else:
-            self.text.setText(self.text.text() + "\nTere fere! " + str(self.rx1)+ str(self.rx2)+ str(self.rx3)+ str(self.rx4))
+            self.oszust_flag = 1
+        self.My_interface = My_interface
+        self.My_interface.button3.clicked.connect(self.Reset)
 
     def Reset(self):
-        self.text.setText("Nowa Gra")
+        self.My_interface.text_label.setText("Nowa Gra")
         self.tura = 1
-        self.rand = random.randint(0,10)
-        if self.rand > 3:
-            self.oszust = 0
+        self.tab_results.clear()
+        for _ in range(4):
+            self.tab_results.append(randint(1, 6))
+        if self.tab_results[0] >= 2:
+            self.oszust_flag = 0
         else:
-            self.oszust = 1
-        self.rx1 = random.randint(1,6)
-        self.rx2 = random.randint(1,6)
-        self.rx3 = random.randint(1,6)
-        self.rx4 = random.randint(1,6)
+            self.oszust_flag = 1
 
-   
+
+class Oszust_class(RegulyGry):
+    def __init__(self, My_game, My_interface):
+        super().__init__(My_interface)
+        self.My_game = My_game
+        self.My_interface = My_interface
+    @Slot()
+    def Sprawdz(self):
+        self.My_game.poprawne = randint(0, 3)
+        self.My_game.wystepujace = randint(0, 4)
+
+        wynik = []
+        wynik.append(str(self.My_interface.x1.value()))
+        wynik.append(str(self.My_interface.x2.value()))
+        wynik.append(str(self.My_interface.x3.value()))
+        wynik.append(str(self.My_interface.x4.value()))
+        wynik_w = "".join(wynik)
+
+        wynik = str(self.My_game.tura)+" : "+wynik_w+" Poprawne ="+str(self.My_game.poprawne)+" Wystepujace = "+str(self.My_game.wystepujace)
+        self.My_interface.text_label.setText(self.My_interface.text_label.text() + '\nTura'+ wynik)
+
+        if self.My_interface.x1.value() == self.My_game.tab_results[0] and self.My_interface.x2.value() == self.My_game.tab_results[1] and self.My_interface.x3.value() == self.My_game.tab_results[2] and self.My_interface.x4.value() == self.My_game.tab_results[3]:
+            self.My_interface.text_label.setText("Wygrana!!!")
+        self.My_game.tura += 1
+
+    def Oszust(self):
+        self.My_interface.text_label.setText("Złapałeś/łaś mnie!")
+
+    def ustaw(self):
+        self.My_interface.button1.clicked.connect(self.Sprawdz)
+        self.My_interface.button2.clicked.connect(self.Oszust)
+
+class Logika(RegulyGry):
+    def __init__(self, My_game, My_interface):
+        super().__init__(My_interface)
+        self.My_game = My_game
+        self.My_interface = My_interface
+
+    @Slot()
+    def Sprawdz(self):
+        if self.My_game.tura > 12:
+            self.My_interface.text_label.setText(self.My_interface.text_label.text()+ "\nPorażka , poprawna kombinacja to: " + str(self.My_game.tab_results))
+        else:
+            self.My_game.poprawne = 0
+            self.My_game.wystepujace = 0
+            tmp_tab = self.My_game.tab_results[:]
+            if self.My_game.tab_results[0] == self.My_interface.x1.value():
+                self.My_game.poprawne += 1
+            elif self.My_interface.x1.value() in tmp_tab:
+                self.My_game.wystepujace += 1
+                tmp_tab.remove(self.My_interface.x1.value())
+            if self.My_game.tab_results[1] == self.My_interface.x2.value():
+                self.My_game.poprawne += 1
+            elif self.My_interface.x2.value() in tmp_tab:
+                self.My_game.wystepujace += 1
+                tmp_tab.remove(self.My_interface.x2.value())
+            if self.My_game.tab_results[2] == self.My_interface.x3.value():
+                self.My_game.poprawne += 1
+            elif self.My_interface.x3.value() in tmp_tab:
+                self.My_game.wystepujace += 1
+                tmp_tab.remove(self.My_interface.x3.value())
+            if self.My_game.tab_results[3] == self.My_interface.x4.value():
+                self.My_game.poprawne += 1
+            elif self.My_interface.x4.value() in tmp_tab:
+                self.My_game.wystepujace += 1
+                tmp_tab.remove(self.My_interface.x4.value())
+            
+            wynik = []
+            wynik.append(str(self.My_interface.x1.value()))
+            wynik.append(str(self.My_interface.x2.value()))
+            wynik.append(str(self.My_interface.x3.value()))
+            wynik.append(str(self.My_interface.x4.value()))
+            wynik_w = "".join(wynik)
+            wynik = str(self.My_game.tura)+" : "+wynik_w+" Poprawne ="+str(self.My_game.poprawne)+" Wystepujace = "+str(self.My_game.wystepujace)
+            self.My_interface.text_label.setText(self.My_interface.text_label.text() + '\nTura'+ wynik)
+
+            if self.My_interface.x1.value() == self.My_game.tab_results[0] and self.My_interface.x2.value() == self.My_game.tab_results[1] and self.My_interface.x3.value() == self.My_game.tab_results[2] and self.My_interface.x4.value() == self.My_game.tab_results[3]:
+                self.My_interface.text_label.setText("Wygrana!!!")
+            self.My_game.tura += 1
+
+    def Oszust(self):
+        self.My_interface.text_label.setText(self.My_interface.text_label.text() + "\nTere fere! " + str(self.My_game.tab_results))
+
+
+    def ustaw(self):
+        self.My_interface.button1.clicked.connect(self.Sprawdz)
+        self.My_interface.button2.clicked.connect(self.Oszust)
+
+
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    widget = Interface()
-    widget.resize(800, 600)
-    widget.show()
-
+    Widget = Interface()
+    Game = RegulyGry(Widget)
+    if Game.oszust_flag == 0:
+        Wynik = Logika(Game, Widget)
+        Wynik.ustaw()
+    else:
+        Wynik = Oszust_class(Game, Widget)
+        Wynik.ustaw()
+    Widget.resize(800, 600)
+    Widget.show()
+    
     sys.exit(app.exec_())
