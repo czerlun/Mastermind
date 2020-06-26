@@ -1,35 +1,39 @@
 #!/usr/bin/python3
 import unittest
-from random import randint
+import random
 import sys
+import Mastermind 
 from PySide2.QtWidgets import (QApplication, QLabel, QPushButton,
                                QVBoxLayout, QWidget, QLineEdit, QSpinBox)
 from PySide2.QtCore import Slot, Qt
-import Mastermind as master
+
 
 class ApplicationTest(unittest.TestCase):
 
-    def wynik(self):
-        self.inter = master.Interface()
-        self.app = master.RegulyGry(self.inter)
-        print(self.app.tab_results)
+    def setUp(self):
+        self.game = Mastermind.RegulyGry()
+        self.example_tab = Mastermind.RegulyGry.tab_user = [1,1,1,1]
 
-    def trafienia(self):
-        self.app.poprawna = 2
-        print(self.app.poprawna = 2)
+    def test_trafienia(self):
+        self.good_tab = Mastermind.RegulyGry.tab_results = [1,1,1,1]
+        self.assertEqual(self.example_tab, self.good_tab)
 
-    def tury(self):
-        self.app.tura = 12
-        self.app.Sprawdz()
+    def test_tury(self):
+        Mastermind.TURA = 12
+        self.game.Sprawdz()
 
-    def Oszust(self):
-        if self.app.oszust_flag == 1:
-            self.app.Oszust()
-        elif self.app.oszust_flag ==0:
-            self.app.Oszust()
+    def test_Oszust(self):
+        self.game.oszust_flag = 1
+        self.game.Oszust()
 
     def reset(self):
-        self.app.tura += 10
-        self.app.reset()
-        self.app.tura += 5
-        self.app.Sprawdz()
+        Mastermind.TURA = 10
+        self.game.reset()
+        self.game.tura += 5
+        self.game.Sprawdz()
+
+
+if __name__ == '__main__':
+    Widget = Interface()
+    Game = RegulyGry(Widget)
+    unittest.main()
