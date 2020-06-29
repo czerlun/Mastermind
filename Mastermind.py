@@ -128,7 +128,10 @@ class Logika(RegulyGry):
             wynik = f"{TURA} : {wynik_w} Poprawne = {self.my_game.poprawne} Wystepujace = {self.my_game.wystepujace}"
             self.my_interface.text_label.setText(self.my_interface.text_label.text() + '\nTura'+ wynik)
 
-            if [[self.my_interface.spin_box[x].value() for x in self.my_game.tab_user] == self.my_game.tab_results]:
+            # if [[self.my_interface.spin_box[x].value() for x in self.my_game.tab_user] == self.my_game.tab_results]:
+            #     self.my_interface.text_label.setText("Wygrana!!!")
+
+            if (self.my_game.tab_user == self.my_game.tab_results):
                 self.my_interface.text_label.setText("Wygrana!!!")
             #if self.my_interface.spin_box[0].value() == self.my_game.tab_results[0] and self.my_interface.spin_box[1].value() == self.my_game.tab_results[1] and self.my_interface.spin_box[2].value() == self.my_game.tab_results[2] and self.my_interface.spin_box[3].value() == self.my_game.tab_results[3]:
             TURA += 1
