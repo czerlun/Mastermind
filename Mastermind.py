@@ -1,31 +1,31 @@
 #!/usr/bin/python3
-import random
+import random 
 import sys
-from PySide2.Qtwidgets import (QApplication, QLabel, QPushButton,
-                               QVBoxLayout, Qwidget, QLineEdit, QSpinBox)
+from PySide2.QtWidgets import (QApplication, QLabel, QPushButton,
+                               QVBoxLayout, QWidget, QLineEdit, QSpinBox)
 from PySide2.QtCore import Slot, Qt
 
 TURA = 1
 
-class Interface(Qwidget):
+class Interface(QWidget):
     def __init__(self):
-        Qwidget.__init__(self)
+        QWidget.__init__(self)
         self.button1 = QPushButton("sprawdz!")
         self.button2 = QPushButton("oszust!")
         self.button3 = QPushButton("reset!")
         self.text_label = QLabel("Witam!")
         self.text_label.setAlignment(Qt.AlignCenter)
         self.spin_box = []
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.text_label)
         for i in range(4):
             self.spin_box.append(QSpinBox(self))
             self.spin_box[i].setMaximum(6)
             self.spin_box[i].setMinimum(1)
-            self.layout.addwidget(self.spin_box[i])
-        self.layout = QVBoxLayout()
-        self.layout.addwidget(self.text_label)
-        self.layout.addwidget(self.button1)
-        self.layout.addwidget(self.button2)
-        self.layout.addwidget(self.button3)
+            self.layout.addWidget(self.spin_box[i])
+        self.layout.addWidget(self.button1)
+        self.layout.addWidget(self.button2)
+        self.layout.addWidget(self.button3)
         self.setLayout(self.layout)
 
 class RegulyGry():
@@ -128,7 +128,7 @@ class Logika(RegulyGry):
             wynik = f"{TURA} : {wynik_w} Poprawne = {self.my_game.poprawne} Wystepujace = {self.my_game.wystepujace}"
             self.my_interface.text_label.setText(self.my_interface.text_label.text() + '\nTura'+ wynik)
 
-            if [[self.spin_box[x].value() for x in self.my_game.tab_user] == self.my_game.tab_results]:
+            if [[self.my_interface.spin_box[x].value() for x in self.my_game.tab_user] == self.my_game.tab_results]:
                 self.my_interface.text_label.setText("Wygrana!!!")
             #if self.my_interface.spin_box[0].value() == self.my_game.tab_results[0] and self.my_interface.spin_box[1].value() == self.my_game.tab_results[1] and self.my_interface.spin_box[2].value() == self.my_game.tab_results[2] and self.my_interface.spin_box[3].value() == self.my_game.tab_results[3]:
             TURA += 1
