@@ -5,7 +5,7 @@ from PySide2.QtWidgets import (QApplication, QLabel, QPushButton,
                                QVBoxLayout, QWidget, QLineEdit, QSpinBox)
 from PySide2.QtCore import Slot, Qt
 
-TURA = 1
+LIMIT_TUR = 12
 
 class Interface(QWidget):
     def __init__(self):
@@ -30,6 +30,7 @@ class Interface(QWidget):
 
 class RegulyGry():
     def __init__(self, my_interface):
+        self.tura = 1
         self.poprawna = 0
         self.wystepujace = 0
         self.oszust_flag = False
@@ -46,8 +47,7 @@ class RegulyGry():
 
     def reset(self):
         self.my_interface.text_label.setText("Nowa Gra")
-        global TURA 
-        TURA = 1
+        self.tura = 1
         self.tab_results.clear()
         for _ in range(4):
             self.tab_results.append(random.randint(1, 6))
@@ -56,24 +56,26 @@ class RegulyGry():
         else:
             self.oszust_flag = True
 
-
-class oszust_class(RegulyGry):
+class OszustClass(RegulyGry):
     def __init__(self, my_game, my_interface):
         super().__init__(my_interface)
         self.my_game = my_game
         self.my_interface = my_interface
     @Slot()
     def sprawdz(self):
-        global TURA 
+        if  self.my_game.tura > LIMIT_TUR:
+            tmp = f"Porażka , poprawna kombinacja to: {str(self.my_game.tab_results)}"
+            self.my_game.reset()
+            self.my_interface.text_label.setText(tmp)
         self.my_game.poprawne = random.randint(0, 3)
         self.my_game.wystepujace = random.randint(0, 4)
         wynik = []
         for i in range(4):
             wynik.append(str(self.my_interface.spin_box[i].value()))
         wynik_w = "".join(wynik)
-        wynik = f"{TURA} : {wynik_w} Poprawne = {self.my_game.poprawne} Wystepujace = {self.my_game.wystepujace}"
+        wynik = f"{self.my_game.tura} : {wynik_w} Poprawne = {self.my_game.poprawne} Wystepujace = {self.my_game.wystepujace}"
         self.my_interface.text_label.setText(self.my_interface.text_label.text() + '\nTura'+ wynik)
-        TURA =+ 1
+        self.my_game.tura += 1
 
     def oszust(self):
         self.my_interface.text_label.setText("Złapałeś/łaś mnie!")
@@ -90,9 +92,10 @@ class Logika(RegulyGry):
 
     @Slot()
     def sprawdz(self):
-        global TURA 
-        if  TURA > 12:
-            self.my_interface.text_label.setText(self.my_interface.text_label.text()+ "\nPorażka , poprawna kombinacja to: " + str(self.my_game.tab_results))
+        if  self.my_game.tura > LIMIT_TUR:
+            tmp = f"Porażka , poprawna kombinacja to: {str(self.my_game.tab_results)}"
+            self.my_game.reset()
+            self.my_interface.text_label.setText(tmp)
         else:
             self.my_game.poprawne = 0
             self.my_game.wystepujace = 0
@@ -100,41 +103,27 @@ class Logika(RegulyGry):
             for i in range(1, 4):
                 self.my_game.tab_user.append(self.my_interface.spin_box[i].value())
 
-            if self.my_game.tab_results[0] == self.my_interface.spin_box[0].value():
-                self.my_game.poprawne += 1
-            elif self.my_interface.spin_box[0].value() in tmp_tab:
-                self.my_game.wystepujace += 1
-                tmp_tab.remove(self.my_interface.spin_box[0].value())
-            if self.my_game.tab_results[1] == self.my_interface.spin_box[1].value():
-                self.my_game.poprawne += 1
-            elif self.my_interface.spin_box[1].value() in tmp_tab:
-                self.my_game.wystepujace += 1
-                tmp_tab.remove(self.my_interface.spin_box[1].value())
-            if self.my_game.tab_results[2] == self.my_interface.spin_box[2].value():
-                self.my_game.poprawne += 1
-            elif self.my_interface.spin_box[2].value() in tmp_tab:
-                self.my_game.wystepujace += 1
-                tmp_tab.remove(self.my_interface.spin_box[2].value())
-            if self.my_game.tab_results[3] == self.my_interface.spin_box[3].value():
-                self.my_game.poprawne += 1
-            elif self.my_interface.spin_box[3].value() in tmp_tab:
-                self.my_game.wystepujace += 1
-                tmp_tab.remove(self.my_interface.spin_box[3].value())
+            for i in range(4):
+                if self.my_game.tab_results[i] == self.my_interface.spin_box[i].value():
+                    self.my_game.poprawne += 1
+                elif self.my_interface.spin_box[i].value() in tmp_tab:
+                    self.my_game.wystepujace += 1
+                    tmp_tab.remove(self.my_interface.spin_box[i].value())
             
             wynik = []
             for i in range(4):
                 wynik.append(str(self.my_interface.spin_box[i].value()))
             wynik_w = "".join(wynik)
-            wynik = f"{TURA} : {wynik_w} Poprawne = {self.my_game.poprawne} Wystepujace = {self.my_game.wystepujace}"
+            wynik = f"{self.my_game.tura} : {wynik_w} Poprawne = {self.my_game.poprawne} Wystepujace = {self.my_game.wystepujace}"
             self.my_interface.text_label.setText(self.my_interface.text_label.text() + '\nTura'+ wynik)
 
             # if [[self.my_interface.spin_box[x].value() for x in self.my_game.tab_user] == self.my_game.tab_results]:
             #     self.my_interface.text_label.setText("Wygrana!!!")
 
-            if (self.my_game.tab_user == self.my_game.tab_results):
+            if (self.my_game.poprawne == 4):
                 self.my_interface.text_label.setText("Wygrana!!!")
             #if self.my_interface.spin_box[0].value() == self.my_game.tab_results[0] and self.my_interface.spin_box[1].value() == self.my_game.tab_results[1] and self.my_interface.spin_box[2].value() == self.my_game.tab_results[2] and self.my_interface.spin_box[3].value() == self.my_game.tab_results[3]:
-            TURA += 1
+            self.my_game.tura += 1
 
     def oszust(self):
         self.my_interface.text_label.setText(self.my_interface.text_label.text() + "\nTere fere! " + str(self.my_game.tab_results))
@@ -151,7 +140,7 @@ def main():
     if game.oszust_flag == False:
         wynik = Logika(game, widget)
     else:
-        wynik = oszust_class(game, widget)
+        wynik = OszustClass(game, widget)
     wynik.ustaw()
     widget.resize(800, 600)
     widget.show()
