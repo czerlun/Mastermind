@@ -39,10 +39,4 @@ class ApplicationTest(unittest.TestCase):
 if __name__ == '__main__':
     widget = Mastermind.Interface()
     game = Mastermind.RegulyGry(Widget)
-    test = ApplicationTest()
-    test.setUp()
-    test.test_trafienia()
-    test.test_tury()
-    test.test_oszust
-    test.test_reset
     unittest.main()
