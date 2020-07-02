@@ -3,8 +3,8 @@ import Mastermind
 import random
 import sys
 import unittest
-from PySide2.QtWidgets import (QApplication, QLabel, QPushButton,
-                               QVBoxLayout, QWidget, QLineEdit, QSpinBox)
+from PySide2.QtWidgets import (QApplication, QLabel,QLineEdit, QPushButton,
+                               QSpinBox, QVBoxLayout, QWidget)
 from PySide2.QtCore import Slot, Qt
 
 
@@ -37,6 +37,4 @@ class ApplicationTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    widget = Mastermind.Interface()
-    game = Mastermind.RegulyGry(Widget)
     unittest.main()
